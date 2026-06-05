@@ -105,7 +105,12 @@ def emotion_detector(text_to_analyse: str) -> Dict[str, Any]:
     try:
         response = requests.post(api_url, headers=headers, json=payload, timeout=10)
         if response.status_code == 400:
-            raise ValueError("Invalid text input")
+            return {
+                "input_text": text,
+                "emotions": {emotion: None for emotion in EMOTION_KEYS},
+                "dominant_emotion": None,
+                "confidence": 0.0,
+            }
         response.raise_for_status()
         api_data = response.json()
         raw_emotions = api_data.get("emotions", {})
@@ -118,6 +123,8 @@ def emotion_detector(text_to_analyse: str) -> Dict[str, Any]:
             "joy": float(raw_emotions.get("joy", 0.0)),
             "sadness": float(raw_emotions.get("sadness", 0.0)),
         }
+    except ValueError:
+        raise
     except requests.RequestException:
         emotion_scores = _simple_emotion_analysis(text)
 
