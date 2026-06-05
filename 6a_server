@@ -1,50 +1,18 @@
 """Servidor Flask para o projeto Emotion Detector."""
 
-from flask import Flask, jsonify, render_template_string, request
+from flask import Flask, jsonify, render_template, request
 
 from EmotionDetection.emotion_detection import emotion_detector
 
 app = Flask(__name__)
 
-HTML_PAGE = """
-<!doctype html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="utf-8">
-    <title>Emotion Detector</title>
-  </head>
-  <body>
-    <h1>Detector de Emoções</h1>
-    <form id="emotion-form">
-      <label for="text">Texto:</label><br>
-      <textarea id="text" name="text" rows="4" cols="50"></textarea><br>
-      <button type="submit">Detectar Emoções</button>
-    </form>
-    <pre id="result"></pre>
-    <script>
-      const form = document.getElementById('emotion-form');
-      const result = document.getElementById('result');
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const text = document.getElementById('text').value;
-        const response = await fetch('/emotionDetector', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text }),
-        });
-        const data = await response.text();
-        result.textContent = data;
-      });
-    </script>
-  </body>
-</html>
-"""
+
 
 
 @app.route('/', methods=['GET'])
 def home() -> str:
     """Renderiza a página inicial com o formulário de detecção."""
-    return render_template_string(HTML_PAGE)
+    return render_template("index.html")
 
 
 @app.route('/emotionDetector', methods=['POST'])
