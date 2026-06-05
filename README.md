@@ -1,8 +1,8 @@
-# Emotion Detector
+# Final Project: Emotion Detector
 
-Projeto final: Detector de Emoções usando Flask e Watson NLP.
+Final Project: Emotion Detector usando Flask e Watson NLP.
 
-- Repositório: https://github.com/cesarfavero/ibm-python-flask.git
+- Repositório: https://github.com/cesarfavero/oaqjp-final-project-emb-ai
 - Aplicação: `EmotionDetection`
 - Servidor Flask: `server.py`
 - Testes unitários: `test_emotion_detection.py`

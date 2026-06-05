@@ -2,7 +2,7 @@
 
 from flask import Flask, jsonify, render_template_string, request
 
-from EmotionDetection import emotion_detector
+from EmotionDetection.emotion_detection import emotion_detector
 
 app = Flask(__name__)
 
@@ -27,13 +27,13 @@ HTML_PAGE = """
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const text = document.getElementById('text').value;
-        const response = await fetch('/detect', {
+        const response = await fetch('/emotionDetector', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text }),
         });
-        const data = await response.json();
-        result.textContent = JSON.stringify(data, null, 2);
+        const data = await response.text();
+        result.textContent = data;
       });
     </script>
   </body>
@@ -47,9 +47,9 @@ def home() -> str:
     return render_template_string(HTML_PAGE)
 
 
-@app.route('/detect', methods=['POST'])
-def detect() -> tuple[dict, int]:
-    """Processa o texto enviado e retorna a análise de emoções."""
+@app.route('/emotionDetector', methods=['POST'])
+def emotion_detector_route() -> tuple[str, int]:
+    """Processa o texto enviado e retorna a análise de emoções em formato de string."""
     payload = request.get_json(silent=True)
     if not payload or not isinstance(payload, dict):
         return jsonify(error='Invalid JSON payload.'), 400
@@ -62,7 +62,16 @@ def detect() -> tuple[dict, int]:
         result = emotion_detector(text)
     except ValueError as error:
         return jsonify(error=str(error)), 400
-    return jsonify(result), 200
+
+    response_string = (
+        f"anger:{result['emotions']['anger']}, "
+        f"disgust:{result['emotions']['disgust']}, "
+        f"fear:{result['emotions']['fear']}, "
+        f"joy:{result['emotions']['joy']}, "
+        f"sadness:{result['emotions']['sadness']}, "
+        f"dominant_emotion:{result['dominant_emotion']}"
+    )
+    return response_string, 200
 
 
 if __name__ == '__main__':

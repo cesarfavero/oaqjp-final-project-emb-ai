@@ -1,5 +1,7 @@
+/opt/homebrew/lib/python3.14/site-packages/requests/__init__.py:109: RequestsDependencyWarning: urllib3 (2.7.0) or chardet (7.4.3)/charset_normalizer (3.4.7) doesn't match a supported version!
+  warnings.warn(
 ....
 ----------------------------------------------------------------------
-Ran 4 tests in 0.102s
+Ran 4 tests in 20.070s
 
 OK

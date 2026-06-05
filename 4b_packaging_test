@@ -1,1 +1,2 @@
-EmotionDetection package is valid
+from EmotionDetection.emotion_detection import emotion_detector
+{'input_text': 'I feel angry and upset.', 'emotions': {'anger': 0.55, 'disgust': 0.1, 'fear': 0.1, 'joy': 0.1, 'sadness': 0.55}, 'dominant_emotion': 'anger', 'confidence': 0.55}

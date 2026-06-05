@@ -1,4 +1,4 @@
-"""Módulo de detecção de emoções usando Watson NLP ou uma chamada de API remota."""
+"""Módulo de detecção de emoções usando o endpoint Watson NLP EmotionPredict."""
 
 import os
 from typing import Any, Dict
@@ -34,24 +34,31 @@ def _simple_emotion_analysis(text: str) -> Dict[str, float]:
 
 
 def emotion_detector(text_to_analyse: str) -> Dict[str, Any]:
-    """Envia o texto para um endpoint de análise e retorna o resultado formatado."""
+    """Envia o texto para o Watson NLP EmotionPredict endpoint e retorna o resultado formatado."""
     if not text_to_analyse or not text_to_analyse.strip():
         raise ValueError("Input text cannot be empty")
 
     text = text_to_analyse.strip()
-    api_url = os.environ.get("EMOTION_API_URL", "https://example.com/v1/analyze")
+    api_url = os.environ.get(
+        "EMOTION_API_URL",
+        "https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict",
+    )
     headers = {
         "Content-Type": "application/json",
-        "grpc-metadata-mm-model-id": os.environ.get("MM_MODEL_ID", "default-model-id"),
+        "grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock",
     }
-    payload = {"text": text}
+    payload = {"raw_document": {"text": text}}
 
     emotion_scores: Dict[str, float] = {}
     try:
         response = requests.post(api_url, headers=headers, json=payload, timeout=10)
+        if response.status_code == 400:
+            raise ValueError("Invalid text input")
         response.raise_for_status()
         api_data = response.json()
         raw_emotions = api_data.get("emotions", {})
+        if not isinstance(raw_emotions, dict):
+            raise ValueError("Invalid emotion response format")
         emotion_scores = {
             "anger": float(raw_emotions.get("anger", 0.0)),
             "disgust": float(raw_emotions.get("disgust", 0.0)),
@@ -59,7 +66,9 @@ def emotion_detector(text_to_analyse: str) -> Dict[str, Any]:
             "joy": float(raw_emotions.get("joy", 0.0)),
             "sadness": float(raw_emotions.get("sadness", 0.0)),
         }
-    except Exception:
+    except ValueError:
+        raise
+    except requests.RequestException:
         emotion_scores = _simple_emotion_analysis(text)
 
     dominant_emotion = max(emotion_scores, key=emotion_scores.get)

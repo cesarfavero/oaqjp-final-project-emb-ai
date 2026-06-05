@@ -36,7 +36,7 @@ class EmotionDetectionTests(unittest.TestCase):
     def test_flask_blank_input_returns_400(self):
         """Verifica que o servidor Flask responde com 400 para texto em branco."""
         client = app.test_client()
-        response = client.post('/detect', json={'text': ''})
+        response = client.post('/emotionDetector', json={'text': ''})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json['error'], 'Text input cannot be blank.')
 
