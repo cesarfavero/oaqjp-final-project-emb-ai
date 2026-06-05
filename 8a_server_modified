@@ -1,3 +1,5 @@
+"""Servidor Flask para o projeto Emotion Detector."""
+
 from flask import Flask, jsonify, render_template_string, request
 
 from EmotionDetection.emotion_detection import emotion_detector

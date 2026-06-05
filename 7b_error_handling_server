@@ -1,3 +1,5 @@
+"""Servidor Flask para o projeto Emotion Detector."""
+
 from flask import Flask, jsonify, render_template_string, request
 
 from EmotionDetection.emotion_detection import emotion_detector
@@ -41,11 +43,13 @@ HTML_PAGE = """
 
 @app.route('/', methods=['GET'])
 def home() -> str:
+    """Renderiza a página inicial com o formulário de detecção."""
     return render_template_string(HTML_PAGE)
 
 
 @app.route('/emotionDetector', methods=['POST'])
 def emotion_detector_route() -> tuple[str, int]:
+    """Processa o texto enviado e retorna a análise de emoções em formato de string."""
     payload = request.get_json(silent=True)
     if not payload or not isinstance(payload, dict):
         return jsonify(error='Invalid JSON payload.'), 400
