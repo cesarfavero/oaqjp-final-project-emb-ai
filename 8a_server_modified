@@ -24,7 +24,7 @@ def emotion_detector_route() -> tuple[str, int]:
 
     text = payload.get('text', '')
     if not isinstance(text, str) or not text.strip():
-        return jsonify(error='Text input cannot be blank.'), 400
+        return jsonify(error='Invalid input! Try again.'), 400
 
     try:
         result = emotion_detector(text)

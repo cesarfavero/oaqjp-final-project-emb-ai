@@ -38,7 +38,7 @@ class EmotionDetectionTests(unittest.TestCase):
         client = app.test_client()
         response = client.post('/emotionDetector', json={'text': ''})
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json['error'], 'Text input cannot be blank.')
+        self.assertEqual(response.json['error'], 'Invalid input! Try again.')
 
 
 if __name__ == '__main__':
